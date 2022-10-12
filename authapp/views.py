@@ -1,7 +1,9 @@
 import os
 
+from axes.decorators import axes_dispatch
 from django.contrib.auth import get_user_model
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import PasswordChangeForm
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.contrib import messages
 from django.http import HttpResponseRedirect
 from django.urls import reverse_lazy
@@ -11,6 +13,8 @@ from django.contrib.auth.views import LogoutView
 from authapp import models, forms
 from django.views.generic import TemplateView, CreateView, UpdateView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+
+# @method_decorator(axes_dispatch, name='dispatch')
 
 
 class CustomLoginView(LoginView):
@@ -55,3 +59,9 @@ class ProfileEditView(UserPassesTestMixin, UpdateView):
 
     def get_success_url(self):
         return reverse_lazy("authapp:profile_edit", args=[self.request.user.pk])
+
+
+class PasswordsChangeView(PasswordChangeView):
+    template_name = 'authapp/change_password.html'
+    from_class = PasswordChangeForm
+    success_url = reverse_lazy('mainapp:main_page')
